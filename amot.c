@@ -88,8 +88,7 @@ int md_check_file(char *filename)
 		if (strcmp(tag->key,"title") == 0)
 		{
 			char *title = tag->value;
-			md_clean_title(title);
-			printf("%s", title);
+			md_clean_title(title);			
 		}
 	}
 	return 0;
@@ -97,22 +96,27 @@ int md_check_file(char *filename)
 
 void md_clean_title(char *title)
 {
-	const char *JUNK[] = {".","=","[","]","-"};
-	// remove all periods
-	char *dst;
-	int i = 0;
-	while (i < sizeof(JUNK)/sizeof(char)) 
+	const char JUNK[] = ".=[]-";
+	const char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
+		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP"};
+	// remove all junk
+	for (int i = 0; i < sizeof(JUNK)/sizeof(char); i++) 
 	{
-		for (dst = title; *title != '\0'; title++)
+		for (int e = 0; e < strlen(title); e++)
 		{
-			//*dst = *title;
-			if (*dst != JUNK[i]) 
-				dst++;
+			if (title[e] == JUNK[i])
+				memmove(title+e, title+e+1,strlen(title)+e);
 		}
-		*dst = '\0';
-		i++;
 	}
-	printf("%s -> %s", title, dst);
+	// remove all words
+	char *result;
+	for (int k = 0; k < sizeof(WORDS)/sizeof(char); k++)
+	{	
+		result = strstr(title,WORDS[k]);
+		if (result != NULL) 
+			strncpy(result,' ',strlen(' '));
+	}
+	printf("%s\n\n", title);
 }
 
 int main() 
