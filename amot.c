@@ -37,12 +37,9 @@ void md_find_directories()
 	DIR *sub_dir;
 	struct dirent *ep;
 	parent_dir = opendir("./");
-	if (parent_dir != NULL)
-	{
-		while ((ep = readdir(parent_dir)))
-		{
-			if ((sub_dir = opendir(ep->d_name)) != NULL)
-			{
+	if (parent_dir != NULL) {
+		while ((ep = readdir(parent_dir))) {
+			if ((sub_dir = opendir(ep->d_name)) != NULL) {
 				md_scan_media(sub_dir,ep);
 				closedir(sub_dir);
 			}
@@ -63,10 +60,8 @@ const char *get_file_ext (const char *filename)
 
 void md_scan_media(DIR *target_dir, struct dirent *ep)
 {
-	while ((ep = readdir(target_dir)))
-	{
-		if (strcmp(get_file_ext(ep->d_name),SUPPORTED_FORMATS[0]) == 0)
-		{
+	while ((ep = readdir(target_dir))) {
+		if (strcmp(get_file_ext(ep->d_name),SUPPORTED_FORMATS[0]) == 0) {
 			md_check_file(ep->d_name);
 		}
 	}
@@ -82,11 +77,9 @@ int md_check_file(char *filename)
 	if ((ret = avformat_open_input(&fmt_ctx, filename, NULL, NULL)))
 		return ret;
 
-	while ((tag = av_dict_get(fmt_ctx->metadata,"", tag, AV_DICT_IGNORE_SUFFIX))) 
-	{
+	while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
 		printf("%s=%s\n", tag->key, tag->value);
-		if (strcmp(tag->key,"title") == 0)
-		{
+		if (strcmp(tag->key,"title") == 0) {
 			char *title = tag->value;
 			md_clean_title(title);			
 		}
@@ -98,24 +91,29 @@ void md_clean_title(char *title)
 {
 	const char JUNK[] = ".=[]-";
 	const char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
-		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP"};
+		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP"};
 	// remove all junk
-	for (int i = 0; i < sizeof(JUNK)/sizeof(char); i++) 
-	{
-		for (int e = 0; e < strlen(title); e++)
-		{
+	for (int i = 0; i < sizeof(JUNK); i++) {
+		for (int e = 0; e < strlen(title); e++) {
 			if (title[e] == JUNK[i])
 				memmove(title+e, title+e+1,strlen(title)+e);
 		}
 	}
 	// remove all words
-	char *result;
-	for (int k = 0; k < sizeof(WORDS)/sizeof(char); k++)
-	{	
-		result = strstr(title,WORDS[k]);
-		if (result != NULL) 
-			strncpy(result,' ',strlen(' '));
+	char *dst = title;
+	while (*dst) {
+		char **word = WORDS;
+		for (; *word; word++) {
+			if (!strncmp(title, *word, strlen(*word))) {
+				title += strlen(*word);
+				break;
+			}
+		}
+		if (!*word)
+				*dst++ = *title++;
 	}
+	puts(dst);
+	*dst = 0;
 	printf("%s\n\n", title);
 }
 
