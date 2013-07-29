@@ -26,10 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <dirent.h>
 #include <string.h>
 
+#include <curl/curl.h>
+
 #include <libavformat/avformat.h>
 #include <libavutil/dict.h>
 
 #include "amot.h"
+#include "posters.h"
+#include "net.h"
 
 void md_find_directories()
 {
@@ -91,14 +95,15 @@ void md_clean_title(char *title)
 {
 	const char JUNK[] = ".=[]-";
 	const char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
-		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP"};
+		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP", NULL};
 	// remove all junk
 	for (int i = 0; i < sizeof(JUNK); i++) {
 		for (int e = 0; e < strlen(title); e++) {
 			if (title[e] == JUNK[i])
-				memmove(title+e, title+e+1,strlen(title)+e);
+				memmove(title+e, title+e+1, strlen(title)+e);
 		}
 	}
+	puts(title);
 	// remove all words
 	char *dst = title;
 	while (*dst) {
@@ -119,6 +124,8 @@ void md_clean_title(char *title)
 
 int main() 
 {
+	
 	md_find_directories();
+	//md_get_movie_id("blah");
 	return 0;
 }
