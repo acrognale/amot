@@ -21,6 +21,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <stdlib.h>
+#include <string.h>
 #include <curl/curl.h>
 #include <jsmn.h>
 
@@ -29,31 +31,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define POSTER_API_PATTERN "http://api.themoviedb.org/3/%s/images" // {id}
 #define API_KEY "key"
 
-
-// TODO: (1) implement a version that doesn't need `int pos` and fork jsmn
-// 		 (2) also need to implement a search for values and keys
-char get_json_key(jsmntok_t *tokens, const char *json_request, int pos) 
-{
-	jsmntok_t key = tokens[pos];
-	unsigned int length = key.end - key.start;
-	char key_string[length + 1];
-	memcpy(key_string, &json_request[key.start], length);
-	key_string[length] = '\0';
-	printf("Key: %s\n", key_string);
-
-	return key_string;
+char *json_token_tostr(char *json, jsmntok_t *tok)
+{   
+	json[tok->end] = '\0';
+    return json + tok->start;
 }
 
-char get_json_value(jsmntok_t *tokens, const char *json_request, int pos)
-{	
-	jsmntok_t key = tokens[pos];
-	unsigned int length = key.size;
-	char value_string[length + 1];
-	memcpy(value_string, &json_request[key.start], length);
-	value_string[length] = '\0';
-	printf("Value: %s\n", value_string);
+jsmntok_t *search_json(char *json, jsmntok_t *tok, char *query) 
+{
+	jsmntok_t **tokens = &tok;
+	for (; *tokens; tokens++) {
+		if (strcmp(json_token_tostr(json, *tokens), query)) 
+			return *tokens;
+	}
 
-	return value_string;
+	return NULL;
 }
 
 void md_get_poster(int id) 
@@ -67,12 +59,14 @@ void md_get_movie_id(char *title)
 	jsmn_parser p;
 	jsmntok_t tok[10];
 	
-	const char *json_request;
-	sprintf(json_request, "\"api_key\" : %s", API_KEY);
+	char json_request[256];
+	snprintf(json_request, sizeof(json_request), "\"api_key\" : %s, \"test_key\" : test ", API_KEY);
 
 	jsmn_init(&p);
 	r = jsmn_parse(&p, json_request, tok, 10);
 
-	get_json_key(tok, json_request, 0);
-	get_json_value(tok, json_request, 0);
+	jsmntok_t *search_result;
+	search_result = search_json(json_request, tok, "test");
+	char *result_string = json_token_tostr(json_request, search_result);
+	printf("%s\n", result_string);
 }

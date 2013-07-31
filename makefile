@@ -9,4 +9,4 @@ debug:
 	$(CC) $(CFILES) -o amot $(LIBS) $(FLAGS) -g
 
 clean:
-	rm -rf *.dSYM *.a *.o
+	rm -rf *.dSYM *.a *.o amot

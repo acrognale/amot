@@ -93,8 +93,8 @@ int md_check_file(char *filename)
 
 void md_clean_title(char *title)
 {
-	const char JUNK[] = ".=[]-";
-	const char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
+	char JUNK[] = ".=[]-";
+	char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
 		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP", NULL};
 	// remove all junk
 	for (int i = 0; i < sizeof(JUNK); i++) {
@@ -126,6 +126,6 @@ int main()
 {
 	
 	md_find_directories();
-	//md_get_movie_id("blah");
+	md_get_movie_id("blah");
 	return 0;
 }
