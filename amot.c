@@ -96,7 +96,6 @@ void md_clean_title(char *title)
 	char JUNK[] = ".=[]-";
 	char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
 		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP", NULL};
-	// remove all junk
 	for (int i = 0; i < sizeof(JUNK); i++) {
 		for (int e = 0; e < strlen(title); e++) {
 			if (title[e] == JUNK[i])
@@ -104,27 +103,24 @@ void md_clean_title(char *title)
 		}
 	}
 	puts(title);
-	// remove all words
 	char *dst = title;
 	while (*dst) {
-		char **word = WORDS;
+		char **word = WORDS; 
 		for (; *word; word++) {
 			if (!strncmp(title, *word, strlen(*word))) {
 				title += strlen(*word);
 				break;
-			}
-		}
+			}	
+		}		
 		if (!*word)
-				*dst++ = *title++;
+			*dst++ = *title++;
 	}
 	puts(dst);
 	*dst = 0;
-	printf("%s\n\n", title);
 }
 
 int main() 
 {
-	
 	md_find_directories();
 	md_get_movie_id("blah");
 	return 0;

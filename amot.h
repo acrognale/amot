@@ -27,4 +27,10 @@ const char *get_file_ext(const char *filename);
 int md_check_file(char *filename);
 void md_clean_title(char *title);
 
+typedef struct {
+	int start;
+	int end;
+	int size;
+} word_t;
+
 const char *SUPPORTED_FORMATS[] = {"mkv","avi"};

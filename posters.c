@@ -41,7 +41,7 @@ jsmntok_t *search_json(char *json, jsmntok_t *tok, char *query)
 {
 	jsmntok_t **tokens = &tok;
 	for (; *tokens; tokens++) {
-		if (strcmp(json_token_tostr(json, *tokens), query)) 
+		if (strcmp(json_token_tostr(json, *tokens), query))
 			return *tokens;
 	}
 
@@ -66,7 +66,7 @@ void md_get_movie_id(char *title)
 	r = jsmn_parse(&p, json_request, tok, 10);
 
 	jsmntok_t *search_result;
-	search_result = search_json(json_request, tok, "test");
+	search_result = search_json(json_request, tok, "key");
 	char *result_string = json_token_tostr(json_request, search_result);
 	printf("%s\n", result_string);
 }
