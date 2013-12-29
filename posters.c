@@ -48,11 +48,6 @@ jsmntok_t *search_json(char *json, jsmntok_t *tok, char *query)
 	return NULL;
 }
 
-void md_get_poster(int id) 
-{
-
-}
-
 void md_get_movie_id(char *title)
 {
 	int r;

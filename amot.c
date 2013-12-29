@@ -95,28 +95,25 @@ void md_clean_title(char *title)
 {
 	char JUNK[] = ".=[]-";
 	char *WORDS[] = { "720p","x264","DVDRip","AC3","BDRip",
-		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP", NULL};
+		"HANDJOB","DON","TBB","SiNNERS","LiNG","EbP","BRRIP", "Eng", "Hindi", NULL};
 	for (int i = 0; i < sizeof(JUNK); i++) {
 		for (int e = 0; e < strlen(title); e++) {
 			if (title[e] == JUNK[i])
 				memmove(title+e, title+e+1, strlen(title)+e);
 		}
 	}
-	puts(title);
-	char *dst = title;
-	while (*dst) {
-		char **word = WORDS; 
-		for (; *word; word++) {
-			if (!strncmp(title, *word, strlen(*word))) {
-				title += strlen(*word);
-				break;
-			}	
-		}		
-		if (!*word)
-			*dst++ = *title++;
+	printf("Junk removed: %s \n", title);
+
+
+	char **word = WORDS;
+	char *s = title;
+	for (; *word; word++) {
+		while ( (s = strstr(s, *word)))  {
+			memmove(s, s + strlen(s), 1 + strlen(title + strlen(s)));
+		}
+		s = title;
 	}
-	puts(dst);
-	*dst = 0;
+	printf("Words removed: %s \n", title);
 }
 
 int main() 
