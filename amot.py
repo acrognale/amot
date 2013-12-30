@@ -7,8 +7,8 @@ amot - another movie organization tool
 
 import sys
 
-import scanner
+from scanner import get_movies_in_directory
 
 if __name__ == "__main__":
 	if sys.argv[1] == "scan":
-		print scanner.get_movies_in_directory('.')
+		print get_movies_in_directory('.')
